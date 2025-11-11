@@ -1,4 +1,4 @@
-
+﻿
 #include "Projectile.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -21,6 +21,7 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 	OnActorBeginOverlap.AddDynamic(this, &AProjectile::ProcessBeginOverlap);
 }

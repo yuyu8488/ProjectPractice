@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerCharacter.h"
@@ -8,7 +8,8 @@
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet\KismetMathLibrary.h"
-//C:\Program Files\Epic Games\UE_5.6\Engine\Source\Runtime\Engine\Private\KismetMathLibrary.cpp
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -20,6 +21,11 @@ APlayerCharacter::APlayerCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw	= false;
+	bUseControllerRotationRoll	= false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void APlayerCharacter::BeginPlay()
@@ -32,6 +38,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -45,26 +52,24 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
-void APlayerCharacter::Move(const FInputActionInstance& Instance)
+void APlayerCharacter::Move(const FInputActionValue& Value)
 {
-	FVector2D Input = Instance.GetValue().Get<FVector2D>();
+	FVector2D Input = Value.Get<FVector2D>();
 
-	FRotator ControlRotation = GetController()->GetControlRotation();
-	FVector RightVector = UKismetMathLibrary::GetRightVector(FRotator(0.f, ControlRotation.Yaw, 0.f));
-	FVector ForwardVector = UKismetMathLibrary::GetForwardVector(FRotator(0.f, ControlRotation.Yaw, 0.f));
-
-	AddMovementInput(RightVector, Input.X);
-	AddMovementInput(ForwardVector, Input.Y);
+	const FRotator ControllerRotation = GetController()->GetControlRotation();
+	const FRotator YawRotation(0, ControllerRotation.Yaw, 0);
+	
+	const FVector ForwardVector = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector RightVector = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	
+	AddMovementInput(ForwardVector, Input.X);
+	AddMovementInput(RightVector, Input.Y);
 }
 
-void APlayerCharacter::Look(const FInputActionInstance& Instance)
+void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	FVector2D Input = Instance.GetValue().Get<FVector2D>();
+	FVector2D Input = Value.Get<FVector2D>();
 
-	UE_LOG(LogTemp, Warning, TEXT("Look InputX: '%f' / InputY: '%f"), Input.X, Input.Y);
-	//FRotator Rotation = FRotator()
-	//AddActorLocalRotation();
-	
 	AddControllerYawInput(Input.X);
 	AddControllerPitchInput(Input.Y);
 }

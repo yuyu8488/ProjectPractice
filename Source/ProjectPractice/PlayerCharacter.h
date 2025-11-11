@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -28,10 +28,10 @@ public:
 
 protected:
 	UFUNCTION()
-	void Move(const FInputActionInstance& Instance);
+	void Move(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void Look(const FInputActionInstance& Instance);
+	void Look(const FInputActionValue& Value);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inputs")
 	TObjectPtr<UInputAction> MoveAction;
