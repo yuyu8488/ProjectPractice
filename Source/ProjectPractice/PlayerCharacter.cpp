@@ -50,7 +50,7 @@ void APlayerCharacter::Move(const FInputActionInstance& Instance)
 	FVector2D Input = Instance.GetValue().Get<FVector2D>();
 
 	FRotator ControlRotation = GetController()->GetControlRotation();
-	FVector RightVector = UKismetMathLibrary::GetRightVector(FRotator(0.f, ControlRotation.Yaw, ControlRotation.Roll));
+	FVector RightVector = UKismetMathLibrary::GetRightVector(FRotator(0.f, ControlRotation.Yaw, 0.f));
 	FVector ForwardVector = UKismetMathLibrary::GetForwardVector(FRotator(0.f, ControlRotation.Yaw, 0.f));
 
 	AddMovementInput(RightVector, Input.X);
@@ -61,6 +61,10 @@ void APlayerCharacter::Look(const FInputActionInstance& Instance)
 {
 	FVector2D Input = Instance.GetValue().Get<FVector2D>();
 
+	UE_LOG(LogTemp, Warning, TEXT("Look InputX: '%f' / InputY: '%f"), Input.X, Input.Y);
+	//FRotator Rotation = FRotator()
+	//AddActorLocalRotation();
+	
 	AddControllerYawInput(Input.X);
 	AddControllerPitchInput(Input.Y);
 }
