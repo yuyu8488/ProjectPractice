@@ -59,5 +59,6 @@ void AAircraftBase::AirControl(const FInputActionInstance& Instance)
 
 void AAircraftBase::Fire_Implementation()
 {
+
 }
 
